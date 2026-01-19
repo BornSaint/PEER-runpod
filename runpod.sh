@@ -45,4 +45,4 @@ if [ "$DEBUG" == "False" ]; then
     runpodctl remove pod $RUNPOD_POD_ID
 fi
 
-sleep infinity
+#sleep infinity
