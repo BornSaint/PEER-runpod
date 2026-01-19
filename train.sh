@@ -2,6 +2,9 @@
 
 cd /PEER-runpod
 source ./venv/bin/activate
+python3.12 -m pip install -U pip
+python3.12 -m pip install -U setuptools wheel
+python3.12 -m pip install -r requirements.txt
 
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
 if [ -n "$HUGGINGFACE_TOKEN" ]; then
