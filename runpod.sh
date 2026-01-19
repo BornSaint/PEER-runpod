@@ -37,7 +37,7 @@ curl -LsSf https://hf.co/cli/install.sh | bash
 # wget -qO- https://astral.sh/uv/install.sh | sh
 curl -LsSf https://astral.sh/uv/install.sh | sh
 # uv init .
-export PATH=$PATH:/root/.local/bin/
+#export PATH=$PATH:/root/.local/bin/
 source $HOME/.local/bin/env
 uv sync
 
