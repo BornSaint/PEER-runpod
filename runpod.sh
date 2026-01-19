@@ -20,9 +20,13 @@ done
 # Install dependencies
 apt update
 apt install -y screen vim git-lfs curl
-screen
+#screen
 
 # # Install common libraries
+# install hf-cli
+curl -LsSf https://hf.co/cli/install.sh | bash
+
+# install uv python
 # wget -qO- https://astral.sh/uv/install.sh | sh
 curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync
@@ -30,7 +34,7 @@ uv sync
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
 if [ -n "$HUGGINGFACE_TOKEN" ]; then
     echo "HUGGINGFACE_TOKEN is defined. Logging in..."
-    hf auth login --token $HUGGINGFACE_TOKEN --add-to-git-credential
+    uvx hf auth login --token $HUGGINGFACE_TOKEN --add-to-git-credential
 fi
 
 if [ "$DEBUG" == "True" ]; then
@@ -39,7 +43,7 @@ fi
 
 # python ./main.py
 uv run torchrun --nproc_per_node=1 main.py
-uv run hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
+uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
 
 if [ "$DEBUG" == "False" ]; then
     runpodctl remove pod $RUNPOD_POD_ID
