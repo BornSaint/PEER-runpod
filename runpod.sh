@@ -61,10 +61,10 @@ fi
 # python "./main.py"
 # .venv/bin/torchrun --nproc_per_node=1 main.py
 # source .venv/bin/activate
-uv run torchrun --nproc_per_node=1 main.py 
+/PEER-runpod/.venv/bin/torchrun --nproc_per_node=1 main.py 
 
 # hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
-uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
+uvx hf upload BornSaint/PEER-weights /PEER-runpod/final_peer_language_model.pth --private
 
 if [ "$DEBUG" == "False" ]; then
     runpodctl remove pod $RUNPOD_POD_ID
