@@ -38,8 +38,8 @@ curl -LsSf https://hf.co/cli/install.sh | bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 # uv init .
 #export PATH=$PATH:/root/.local/bin/
-source $HOME/.local/bin/env
-uv sync --python 3.12
+bash -c "source $HOME/.local/bin/env"
+bash -c "uv sync --python 3.12"
 # uv add -r requirements.txt --python 3.12
 
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
@@ -52,20 +52,14 @@ fi
 if [ "$DEBUG" == "True" ]; then
     echo "Launch Finetune in debug mode"
 fi
-source .venv/bin/activate
-pwd
-pwd
-pwd
-pwd
-
-sleep infinity
+bash -c "source .venv/bin/activate"
 
 # python "./main.py"
-.venv/bin/torchrun --nproc_per_node=1 main.py
+bash -c ".venv/bin/torchrun --nproc_per_node=1 main.py"
 # source .venv/bin/activate
 # uvx torchrun --nproc_per_node=1 main.py
 
-hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
+bash -c "hf upload BornSaint/PEER-weights final_peer_language_model.pth --private"
 # uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
 
 if [ "$DEBUG" == "False" ]; then
