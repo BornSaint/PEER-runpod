@@ -39,7 +39,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # uv init .
 #export PATH=$PATH:/root/.local/bin/
 source $HOME/.local/bin/env
-uv sync
+# uv sync
+uv add -r requirements.txt
 
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
 if [ -n "$HUGGINGFACE_TOKEN" ]; then
@@ -51,13 +52,14 @@ fi
 if [ "$DEBUG" == "True" ]; then
     echo "Launch Finetune in debug mode"
 fi
-
+source .venv/bin/activate
 # python "./main.py"
-# torchrun --nproc_per_node=1 main.py
-uvx torchrun --nproc_per_node=1 main.py
+torchrun --nproc_per_node=1 main.py
+# source .venv/bin/activate
+# uvx torchrun --nproc_per_node=1 main.py
 
-# hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
-uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
+hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
+# uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
 
 if [ "$DEBUG" == "False" ]; then
     runpodctl remove pod $RUNPOD_POD_ID
