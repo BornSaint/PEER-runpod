@@ -21,17 +21,19 @@ done
 # pwd
 # ls -a
 # sleep infinity
-cd PEER-runpod
+
 # Install dependencies
 apt update
 apt install -y python3.12 python3.12-dev python3.12-venv python3.12-pip
+apt install -y screen vim git-lfs
+
 cd /PEER-runpod
-source ./.venv/bin/activate
+python3.13 -m venv venv
+source ./venv/bin/activate
 python3.12 -m pip install -U pip
 python3.12 -m pip install -U setuptools wheel
 python3.12 -m pip install -r requirements.txt
 
-apt install -y screen vim git-lfs
 screen
 
 sleep infinity
