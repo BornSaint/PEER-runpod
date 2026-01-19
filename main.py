@@ -1,0 +1,141 @@
+import os
+import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data.distributed import DistributedSampler
+from torch.utils.data import DataLoader
+from transformers import GPT2Tokenizer
+from peer.dataset import PileDataset
+from peer.model import PEERLanguageModel
+from peer.trainer import train, validate
+import matplotlib.pyplot as plt
+from torch.amp import GradScaler
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
+def plot_losses(train_losses, val_losses, epoch, save_dir):
+    plt.figure(figsize=(10, 5))
+    plt.plot(train_losses, label='Train Loss')
+    plt.plot(val_losses, label='Validation Loss')
+    plt.xlabel('Batch')
+    plt.ylabel('Loss')
+    plt.title(f'Epoch {epoch+1} Losses')
+    plt.legend()
+    plt.savefig(os.path.join(save_dir, f'epoch_{epoch+1}_losses.png'))
+    plt.close()
+
+# main execution
+if __name__ == "__main__":
+    dist.init_process_group(backend='nccl')
+    local_rank = int(os.environ["LOCAL_RANK"])
+    torch.cuda.set_device(local_rank)
+    device = torch.device("cuda", local_rank)
+    device = torch.device('cuda:0')
+
+    # Hyperparameters
+    vocab_size = 50257  # GPT-2 tokenizer vocab size
+    dim = 256
+    num_layers = 8
+    num_heads = 8
+    num_experts = 512*512 #256 * 256  # Reduced from 512*512 to fit in 24GB GPU
+    #num_experts = 1_000_000 is a 8B model around 30GB disk space
+    top_k = 16
+    batch_size = 6 #4  # Optimized for RTX 4090 24GB - conservative setting for testing
+    num_epochs = 1 # 10  # 1 to test
+    learning_rate = 1e-4
+    
+    # Initialize tokenizer and model
+    tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+    tokenizer.pad_token = tokenizer.eos_token
+    model = PEERLanguageModel(vocab_size, dim, num_layers, num_heads, num_experts, top_k).to(device)
+
+    # Compile model for optimized performance (PyTorch 2.0+)
+    model = torch.compile(model, mode='reduce-overhead')
+    # print("Number of parameters:", sum(p.numel() for p in model.parameters()))
+    # torch.save(model.state_dict(), 'test.pth')
+    # exit()
+    # Wrap the model with DistributedDataParallel
+    model = DDP(model, device_ids=[local_rank], output_device=local_rank)
+
+    # Load Pile dataset
+    train_dataset = PileDataset('Salesforce/wikitext', tokenizer, split='train')
+    val_dataset = PileDataset('Salesforce/wikitext', tokenizer, split='validation')
+    
+    # Use DistributedSampler for the training data
+    train_sampler = DistributedSampler(train_dataset)
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        sampler=train_sampler,
+        num_workers=8,#4,           # Parallel data loading
+        pin_memory=True,         # Faster CPU→GPU transfer
+        prefetch_factor=3,       # Preload batches
+        persistent_workers=True  # Reuse workers between epochs
+    )
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=8,#4,
+        pin_memory=True,
+        prefetch_factor=3,
+        persistent_workers=True
+    )
+    
+    # Optimizer
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+    # Mixed precision training
+    scaler = GradScaler('cuda')
+
+    if local_rank == 0:
+        print("Number of parameters:", sum(p.numel() for p in model.parameters()))
+        os.makedirs('plots', exist_ok=True)
+
+    # Warmup pass to trigger torch.compile compilation before training
+    if local_rank == 0:
+        print("Warming up model (compiling with torch.compile)...")
+    model.train()
+    dummy_input = torch.randint(0, vocab_size, (batch_size, 512), device=device)
+    with torch.amp.autocast('cuda'):
+        dummy_output = model(dummy_input)
+        dummy_loss = dummy_output.mean()  # Use mean instead of sum
+
+    # Proper warmup: forward + backward + step (don't update weights)
+    optimizer.zero_grad()
+    scaler.scale(dummy_loss).backward()
+    scaler.step(optimizer)
+    scaler.update()
+    optimizer.zero_grad()  # Clear gradients before real training
+
+    if local_rank == 0:
+        print("Warmup complete! Starting training...")
+
+    # Training and validation loop
+    best_val_loss = float('inf')
+    for epoch in range(num_epochs):
+        train_sampler.set_epoch(epoch)
+        if local_rank == 0:
+            print(f"Epoch Training {epoch+1}/{num_epochs}")
+        train_loss, train_batch_losses = train(model, train_loader, optimizer, device, scaler, epoch)
+        if local_rank == 0:
+            print(f"Epoch Validation {epoch+1}/{num_epochs}")
+            val_loss, val_perplexity, val_batch_losses = validate(model, val_loader, device)
+            print(f"Epoch {epoch+1}/{num_epochs}, Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}, Val Perplexity: {val_perplexity:.4f}")
+            
+            # Plot and save losses
+            plot_losses(train_batch_losses, val_batch_losses, epoch, 'plots')
+            
+            # Save the best model
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+                torch.save(model.state_dict(), 'best_peer_language_model.pth')
+    
+    # Save the final trained model
+    if local_rank == 0:
+        torch.save(model.state_dict(), 'final_peer_language_model.pth')
+
+    # Clean up
+    dist.destroy_process_group()
