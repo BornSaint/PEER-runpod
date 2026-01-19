@@ -24,7 +24,7 @@ done
 cd PEER-runpod
 # Install dependencies
 apt update
-apt install -y curl
+# apt install -y curl
 
 apt install -y screen vim git-lfs curl
 screen
@@ -43,9 +43,9 @@ uv venv --python 3.12 --project .
 # source .venv/bin/activate
 uv sync --python 3.12 --project .
 # uv add -r requirements.txt --python 3.12
-ls -a 
-ls -a 
-sleep infinity
+# ls -a 
+# ls -a 
+# sleep infinity
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
 if [ -n "$HUGGINGFACE_TOKEN" ]; then
     echo "HUGGINGFACE_TOKEN is defined. Logging in..."
