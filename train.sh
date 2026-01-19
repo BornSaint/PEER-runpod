@@ -1,5 +1,5 @@
 
-apt install python3.12 python3.12-dev python3.12-venv
+apt install -y python3.12 python3.12-dev python3.12-venv
 cd /PEER-runpod
 source ./.venv/bin/activate
 
