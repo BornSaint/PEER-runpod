@@ -17,7 +17,8 @@ if [ "$DEBUG" == "True" ]; then
     echo "Launch Finetune in debug mode"
 fi
 
-torchrun --nproc_per_node=1 main.py
+# torchrun --nproc_per_node=1 main.py
+torchrun --nproc_per_node=2 --nnodes=1 main.py
 # hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
 hf upload BornSaint/PEER-weights /PEER-runpod/final_peer_language_model.pth --private
 
