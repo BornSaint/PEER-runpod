@@ -53,6 +53,12 @@ if [ "$DEBUG" == "True" ]; then
     echo "Launch Finetune in debug mode"
 fi
 source .venv/bin/activate
+pwd
+pwd
+pwd
+pwd
+
+sleep infinity
 
 # python "./main.py"
 .venv/bin/torchrun --nproc_per_node=1 main.py
