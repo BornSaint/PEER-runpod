@@ -26,8 +26,8 @@ cd PEER-runpod
 apt update
 apt install -y curl
 
-#apt install -y screen vim git-lfs curl
-#screen
+apt install -y screen vim git-lfs curl
+screen
 
 # # Install common libraries
 # install hf-cli
