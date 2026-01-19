@@ -29,6 +29,7 @@ apt update
 apt install -y screen vim git-lfs curl
 screen
 
+sleep infinity
 # # Install common libraries
 # install hf-cli
 # curl -LsSf https://hf.co/cli/install.sh | bash
