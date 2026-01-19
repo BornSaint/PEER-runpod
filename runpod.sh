@@ -39,8 +39,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # uv init .
 #export PATH=$PATH:/root/.local/bin/
 source $HOME/.local/bin/env
-# uv sync
-uv add -r requirements.txt
+uv sync --python 3.12
+# uv add -r requirements.txt --python 3.12
 
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
 if [ -n "$HUGGINGFACE_TOKEN" ]; then
