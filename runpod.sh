@@ -26,7 +26,7 @@ cd PEER-runpod
 apt update
 # apt install -y curl
 
-apt install -y screen vim git-lfs curl
+apt install -y screen vim git-lfs
 screen
 
 sleep infinity
