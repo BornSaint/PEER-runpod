@@ -44,6 +44,7 @@ fi
 
 # python ./main.py
 uvx torchrun --nproc_per_node=1 main.py
+
 uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
 
 if [ "$DEBUG" == "False" ]; then
