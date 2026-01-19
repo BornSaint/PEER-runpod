@@ -37,13 +37,13 @@ curl -LsSf https://hf.co/cli/install.sh | bash
 # wget -qO- https://astral.sh/uv/install.sh | sh
 curl -LsSf https://astral.sh/uv/install.sh | sh
 # uv init .
-uv sync
+/root/.local/bin/uv sync
 
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
 if [ -n "$HUGGINGFACE_TOKEN" ]; then
     echo "HUGGINGFACE_TOKEN is defined. Logging in..."
     # hf auth login --token $HUGGINGFACE_TOKEN --add-to-git-credential
-    uvx hf auth login --token $HUGGINGFACE_TOKEN --add-to-git-credential
+    /root/.local/bin/uvx hf auth login --token $HUGGINGFACE_TOKEN --add-to-git-credential
 fi
 
 if [ "$DEBUG" == "True" ]; then
@@ -52,10 +52,10 @@ fi
 
 # python "./main.py"
 # torchrun --nproc_per_node=1 main.py
-uvx torchrun --nproc_per_node=1 main.py
+/root/.local/bin/uvx torchrun --nproc_per_node=1 main.py
 
 # hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
-uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
+/root/.local/bin/uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
 
 if [ "$DEBUG" == "False" ]; then
     runpodctl remove pod $RUNPOD_POD_ID
