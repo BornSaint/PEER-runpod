@@ -24,7 +24,8 @@ done
 
 # Install dependencies
 apt update
-apt install -y python3.12 python3.12-dev python3.12-venv python3.12-pip
+apt install -y python3.12 python3.12-dev python3.12-venv python3-pip
+python3.12 -m ensure-pip
 apt install -y screen vim git-lfs
 
 cd /PEER-runpod
