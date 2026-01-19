@@ -61,7 +61,7 @@ fi
 # python "./main.py"
 # .venv/bin/torchrun --nproc_per_node=1 main.py
 # source .venv/bin/activate
-uvx torchrun --nproc_per_node=1 main.py
+uvx --project . torchrun --nproc_per_node=1 main.py 
 
 # hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
 uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
