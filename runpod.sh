@@ -29,17 +29,6 @@ apt update
 apt install -y screen vim git-lfs
 screen
 
-
-# # Install common libraries
-# install hf-cli
-curl -LsSf https://hf.co/cli/install.sh | bash
-# pip install -r requirements.txt
-# install uv python
-# wget -qO- https://astral.sh/uv/install.sh | sh
-curl -LsSf https://astral.sh/uv/install.sh | sh
-source $HOME/.local/bin/env
-
-uv sync
 sleep infinity
 
 
