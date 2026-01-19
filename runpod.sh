@@ -29,6 +29,7 @@ curl -LsSf https://hf.co/cli/install.sh | bash
 # install uv python
 # wget -qO- https://astral.sh/uv/install.sh | sh
 curl -LsSf https://astral.sh/uv/install.sh | sh
+uv init .
 uv sync
 
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
@@ -42,7 +43,7 @@ if [ "$DEBUG" == "True" ]; then
 fi
 
 # python ./main.py
-uv run torchrun --nproc_per_node=1 main.py
+uvx torchrun --nproc_per_node=1 main.py
 uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
 
 if [ "$DEBUG" == "False" ]; then
