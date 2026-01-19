@@ -38,6 +38,7 @@ curl -LsSf https://hf.co/cli/install.sh | bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 # uv init .
 export PATH=$PATH:/root/.local/bin/
+source $HOME/.local/bin/env
 uv sync
 
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
