@@ -17,10 +17,11 @@ for ((i=0; i<gpu_count; i++)); do
     cuda_devices+="$i"
 done
 
-clear
-pwd
-ls -a
-sleep infinity
+# clear
+# pwd
+# ls -a
+# sleep infinity
+cd PEER-runpod
 # Install dependencies
 apt update
 apt install -y curl
