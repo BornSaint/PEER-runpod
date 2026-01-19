@@ -63,8 +63,8 @@ fi
 # source .venv/bin/activate
 uvx torchrun --nproc_per_node=1 main.py
 
-hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
-# uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
+# hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
+uvx hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
 
 if [ "$DEBUG" == "False" ]; then
     runpodctl remove pod $RUNPOD_POD_ID
