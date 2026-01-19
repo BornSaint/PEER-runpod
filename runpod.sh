@@ -17,9 +17,9 @@ for ((i=0; i<gpu_count; i++)); do
     cuda_devices+="$i"
 done
 
-cls 
+clear
 pwd
-la
+ls -a
 sleep infinity
 # Install dependencies
 apt update
