@@ -40,10 +40,12 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 #export PATH=$PATH:/root/.local/bin/
 source $HOME/.local/bin/env
 uv venv --python 3.12 --project .
-source .venv/bin/activate
+# source .venv/bin/activate
 uv sync --python 3.12 --project .
 # uv add -r requirements.txt --python 3.12
-
+ls -a 
+ls -a 
+sleep infinity
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
 if [ -n "$HUGGINGFACE_TOKEN" ]; then
     echo "HUGGINGFACE_TOKEN is defined. Logging in..."
@@ -58,7 +60,7 @@ fi
 
 # python "./main.py"
 .venv/bin/torchrun --nproc_per_node=1 main.py
-source .venv/bin/activate
+# source .venv/bin/activate
 # uvx torchrun --nproc_per_node=1 main.py
 
 hf upload BornSaint/PEER-weights final_peer_language_model.pth --private
