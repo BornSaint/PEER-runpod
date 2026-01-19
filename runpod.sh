@@ -53,8 +53,9 @@ if [ "$DEBUG" == "True" ]; then
     echo "Launch Finetune in debug mode"
 fi
 source .venv/bin/activate
+
 # python "./main.py"
-torchrun --nproc_per_node=1 main.py
+.venv/bin/torchrun --nproc_per_node=1 main.py
 # source .venv/bin/activate
 # uvx torchrun --nproc_per_node=1 main.py
 
