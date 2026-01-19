@@ -30,10 +30,10 @@ apt install -y screen vim git-lfs
 
 cd /PEER-runpod
 python3.12 -m venv venv
-source ./venv/bin/activate
-python3.12 -m pip install -U pip
-python3.12 -m pip install -U setuptools wheel
-python3.12 -m pip install -r requirements.txt
+# source ./venv/bin/activate
+# python3.12 -m pip install -U pip
+# python3.12 -m pip install -U setuptools wheel
+# python3.12 -m pip install -r requirements.txt
 
 screen
 
