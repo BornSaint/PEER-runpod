@@ -1,7 +1,7 @@
 
-apt install -y python3.12 python3.12-dev python3.12-venv
+
 cd /PEER-runpod
-source ./.venv/bin/activate
+source ./venv/bin/activate
 
 # Check if HUGGINGFACE_TOKEN is set and log in to Hugging Face
 if [ -n "$HUGGINGFACE_TOKEN" ]; then
